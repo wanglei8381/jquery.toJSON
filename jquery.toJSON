@@ -1,0 +1,35 @@
+//将DOM的的表单元素转化为JSON对象
+    //获取规则:
+    //1:有name属性
+    //2:是有效的元素
+    $.fn.extend({
+        toJSON: function () {
+            var pairs = {};
+            var params = this.find('input[name]:enabled');
+            params = params.add(this.find('textarea[name]:enabled'));
+            params = params.add(this.find('select[name]:enabled'));
+            $.each(params, function (key, dom) {
+                switch (dom.type) {
+                    case 'radio' :
+                        if (dom.checked) {
+                            pairs[dom.name] = dom.value;
+                        }
+                        break;
+                    case 'checkbox' :
+                        if (dom.checked) {
+                            if (pairs[dom.name]) {
+                                pairs[dom.name].push(dom.value);
+                            } else {
+                                pairs[dom.name] = [dom.value];
+                            }
+                        }
+                        break;
+                    default :
+                        pairs[dom.name] = dom.value;
+                        break;
+                }
+                return pairs;
+            });
+
+        }
+    });
